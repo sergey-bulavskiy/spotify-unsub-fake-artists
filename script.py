@@ -3,7 +3,6 @@ import spotipy
 from spotipy import client
 from spotipy.oauth2 import SpotifyOAuth
 
-
 class SpotifyArtist(object):
     """ Class representing spotify artist objects. Not all fields presented. \n
         ref: https://developer.spotify.com/documentation/web-api/reference/#object-artistobject """
