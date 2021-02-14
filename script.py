@@ -20,8 +20,6 @@ def ask_input(param_name):
     return input(param_name + ': ')
 
 # Function that retrieves client credentials
-
-
 def retrieve_credentials():
     client_id = ask_input('client_id')
     client_secret = ask_input('client_secret')
