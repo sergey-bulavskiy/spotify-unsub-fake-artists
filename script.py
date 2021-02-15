@@ -1,7 +1,6 @@
-from typing import List
 import spotipy
-from spotipy import client
 from spotipy.oauth2 import SpotifyOAuth
+
 
 class SpotifyArtist(object):
     """ Class representing spotify artist objects. Not all fields presented. \n
@@ -13,21 +12,21 @@ class SpotifyArtist(object):
         self.name = name
 
 
-# Simple function that asks user for input of specific parameter.
 def ask_input(param_name):
+    """ Simple function that asks user for input of specific parameter. """
+
     print('Enter ' + param_name + ':')
     return input(param_name + ': ')
 
-# Function that retrieves client credentials
+
 def retrieve_credentials():
+    """ Function that retrieves client credentials """
     client_id = ask_input('client_id')
     client_secret = ask_input('client_secret')
     return client_id, client_secret
 
 
 client_id, client_secret = retrieve_credentials()
-
-# TODO: Add check that token is expired, and then - authenticate.
 spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                            client_secret=client_secret,
                                                            redirect_uri="https://spotify.com",
@@ -35,14 +34,27 @@ spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                            scope='user-follow-read'))
 
 
-resp = spotify_client.current_user_followed_artists(50)
+def get_user_followed_artists():
+    """ Downloads all artists followed by current user """
 
-# TODO: Move to methods and add handling of paging.
-spotify_followed_artists = []
-for artist in resp["artists"]["items"]:
-    spotify_followed_artists.append(
-        SpotifyArtist(artist["genres"],
-                      artist["id"],
-                      artist["name"]))
+    spotify_artists = []
+    response = spotify_client.current_user_followed_artists(50)['artists']
 
-[print(a.id, a.name, a.genres) for a in spotify_followed_artists]
+    while response['next']:
+        spotify_artists.extend(map(
+            lambda json_artist:
+            SpotifyArtist(
+                json_artist["genres"],
+                json_artist["id"],
+                json_artist["name"]),
+                response['items']))
+
+        response = spotify_client.next(response)['artists']
+
+    return spotify_artists
+
+
+artists = get_user_followed_artists()
+
+# Careful, it will print out all 2k artists that you have!!!
+[print(a.id, a.name, a.genres) for a in artists]
