@@ -26,6 +26,8 @@ def retrieve_credentials():
     return client_id, client_secret
 
 
+# TODO: move all spotify stuff to separate file.
+# TODO: move authentication code into method.
 client_id, client_secret = retrieve_credentials()
 spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                            client_secret=client_secret,
@@ -56,5 +58,5 @@ def get_user_followed_artists():
 
 artists = get_user_followed_artists()
 
-# Careful, it will print out all 2k artists that you have!!!
+# Careful, it will print out all 2k artists that you have.
 [print(a.id, a.name, a.genres) for a in artists]
