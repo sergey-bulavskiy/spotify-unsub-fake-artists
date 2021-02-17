@@ -1,6 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+spotify_client = None
+
+
 class SpotifyArtist(object):
     """ Class representing spotify artist objects. Not all fields presented. \n
         ref: https://developer.spotify.com/documentation/web-api/reference/#object-artistobject """
@@ -10,7 +13,6 @@ class SpotifyArtist(object):
         self.id = id
         self.name = name
 
-spotify_client = None
 
 def authenticate(client_id, client_secret):
     """ Should be called before all other interactions with api."""

@@ -16,14 +16,15 @@ def retrieve_credentials():
 
 
 def main():
-    #TODO: Move to script args parameters 
+    # TODO: Move to script args parameters
     client_id, client_secret = retrieve_credentials()
-    
+
     spotify_api.authenticate(client_id=client_id, client_secret=client_secret)
     artists = spotify_api.get_user_followed_artists()
 
     # Careful, it will print out all 2k artists that you have.
     [print(a.id, a.name, a.genres) for a in artists]
+
 
 if __name__ == "__main__":
     main()
