@@ -1,9 +1,13 @@
-#!/usr/bin/env python3
 import sys
 import getopt
 
 
 def parse_parameters(argv):
+    """ Function that parses input arguments, 
+    and returns users name and password, 
+    to authenticate on lastfm
+    """
+
     CONST_USERNAME_SHORT = 'u'
     CONST_PASSWORD_SHORT = 'p'
     CONST_USERNAME_LONG = 'username'
