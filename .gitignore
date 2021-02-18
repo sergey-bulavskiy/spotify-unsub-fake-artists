@@ -6,6 +6,8 @@ __pycache__/
 .vscode/
 .idea/
 
+api_secrets.yaml
+
 # C extensions
 *.so
 
