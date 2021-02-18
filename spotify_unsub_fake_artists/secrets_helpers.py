@@ -1,5 +1,22 @@
 import sys
 import getopt
+import yaml
+
+
+def read_lastfm_secrets_from_yaml(yaml_content) -> (str, str):
+    secrets = yaml.load(yaml_content, Loader=yaml.BaseLoader)
+    lastfm = secrets.get('lastfm')
+    api_key = lastfm.get('api_key')
+    api_secret = lastfm.get('api_secret')
+    return api_key, api_secret
+
+
+def read_spotify_secrets_from_yaml(yaml_content) -> (str, str):
+    secrets = yaml.load(yaml_content, Loader=yaml.BaseLoader)
+    spotify = secrets.get('spotify')
+    client_id = spotify.get('client_id')
+    client_secret = spotify.get('client_secret')
+    return client_id, client_secret
 
 
 def parse_lastfm_credentials_from_args(argv):
@@ -37,9 +54,9 @@ def parse_lastfm_credentials_from_args(argv):
         if opt == '-h':
             print(help_string)
             sys.exit()
-        elif opt in (f"-{CONST_USERNAME_SHORT}", f"-{CONST_USERNAME_LONG}"):
+        elif opt in (f"-{CONST_USERNAME_SHORT}", f"--{CONST_USERNAME_LONG}"):
             lastfm_username = arg
-        elif opt in (f"-{CONST_PASSWORD_SHORT}", f"-{CONST_PASSWORD_LONG}"):
+        elif opt in (f"-{CONST_PASSWORD_SHORT}", f"--{CONST_PASSWORD_LONG}"):
             lastfm_password = arg
 
     if lastfm_password == '' or lastfm_password == '':
