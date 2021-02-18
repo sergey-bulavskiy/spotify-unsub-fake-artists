@@ -2,7 +2,7 @@ import sys
 import getopt
 
 
-def parse_parameters(argv):
+def parse_lastfm_credentials_from_args(argv):
     """ Function that parses input arguments, 
     and returns users name and password, 
     to authenticate on lastfm
@@ -40,4 +40,4 @@ def parse_parameters(argv):
 
 
 if __name__ == "__main__":
-    parse_parameters(sys.argv[1:])
+    parse_lastfm_credentials_from_args(sys.argv[1:])
