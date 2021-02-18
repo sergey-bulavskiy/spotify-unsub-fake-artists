@@ -11,12 +11,12 @@ def parse_lastfm_credentials_from_args(argv):
     CONST_USERNAME_SHORT = 'u'
     CONST_PASSWORD_SHORT = 'p'
     CONST_USERNAME_LONG = 'username'
-    CONST_PASSWORD_LONG = 'passowrd'
+    CONST_PASSWORD_LONG = 'password'
     lastfm_username = ''
     lastfm_password = ''
     help_string = (
         f'usage: main.py  [-{CONST_USERNAME_SHORT} | -{CONST_USERNAME_LONG}] <username>'
-        f' [-{CONST_PASSWORD_SHORT} | -{CONST_PASSWORD_LONG}] <passowrd>'
+        f' [-{CONST_PASSWORD_SHORT} | -{CONST_PASSWORD_LONG}] <password>'
         '\nScript requires lastfm credentials, '
         'please specify them like shown in usage above.')
 

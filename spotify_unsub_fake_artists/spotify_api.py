@@ -1,7 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-spotify_client = None
+spotify_client: spotipy.Spotify = None
 
 
 class SpotifyArtist(object):
@@ -14,8 +14,8 @@ class SpotifyArtist(object):
         self.name = name
 
 
-def authenticate(client_id, client_secret):
-    """ Should be called before all other interactions with api."""
+def authenticate(client_id: str, client_secret: str) -> None:
+    """ Should be called before all other interactions with api. """
     global spotify_client
     spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                                client_secret=client_secret,
@@ -28,7 +28,7 @@ def get_user_followed_artists():
     """ Downloads all artists followed by current user """
 
     # TODO: check that api is authenticated somehow.
-    if (spotify_client is None):
+    if spotify_client is None:
         raise Exception(
             'Spotify client is not authenticated, please call .authenticate with correctly specified credentials')
 
@@ -42,8 +42,12 @@ def get_user_followed_artists():
                 json_artist["genres"],
                 json_artist["id"],
                 json_artist["name"]),
-                response['items']))
+            response['items']))
 
         response = spotify_client.next(response)['artists']
 
     return spotify_artists
+
+
+if __name__ == "__main__":
+    pass
