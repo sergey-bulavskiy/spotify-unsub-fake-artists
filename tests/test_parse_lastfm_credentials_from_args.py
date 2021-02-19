@@ -30,7 +30,7 @@ class ParseLastfmCredentialsFromArgsTests(TestCase):
             secrets_helpers.parse_lastfm_credentials_from_args(['-h'])
         self.assertEqual(None, err.exception.code)
 
-    #TODO research ways to make parametrized tests.
+    # TODO research ways to make parametrized tests.
     @patch('builtins.print')
     def test_help_arg_prints_out_help_message(self, mock_print):
         with self.assertRaises(SystemExit):
@@ -38,13 +38,14 @@ class ParseLastfmCredentialsFromArgsTests(TestCase):
         mock_print.assert_called_with(expected_help_message)
 
     @patch('builtins.print')
-    def test_username_missing_raises(self, mock_print):
+    def test_password_missing_raises_prints_help(self, mock_print):
         with self.assertRaises(SystemExit):
-            secrets_helpers.parse_lastfm_credentials_from_args(['-u', 'usrname'])
+            secrets_helpers.parse_lastfm_credentials_from_args(
+                ['-u', 'usrname'])
         mock_print.assert_called_with(expected_help_message)
 
     @patch('builtins.print')
-    def test_password_missing_raises(self, mock_print):
+    def test_username_missing_raises_prints_help(self, mock_print):
         with self.assertRaises(SystemExit):
             secrets_helpers.parse_lastfm_credentials_from_args(['-p', 'pssw'])
         mock_print.assert_called_with(expected_help_message)
