@@ -26,7 +26,7 @@ class SpotifyClient(object):
                                                                         scope='user-follow-read'))
 
     def get_user_followed_artists(self):
-        """ Downloads all artists followed by current user """
+        """ Downloads all artists followed by current user. """
 
         spotify_artists = []
         response = self.spotify_client.current_user_followed_artists(50)['artists']
@@ -42,6 +42,10 @@ class SpotifyClient(object):
 
             response = self.spotify_client.next(response)['artists']
         return spotify_artists
+
+    def unfollow_artists(self, ids: list[str]):
+        """ Unfollow artists with given ids. """
+        self.spotify_client.user_unfollow_artists(ids)
 
 
 if __name__ == "__main__":

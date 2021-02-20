@@ -5,8 +5,8 @@ from spotify_api import SpotifyClient, SpotifyArtist
 from lastfm_api import LastfmClient
 
 
-def get_spotify_artists_intersecting_with_lastfm(spotify_artists: list[SpotifyArtist],
-                                                 lastfm_artists: list[LastfmArtist]) -> list[SpotifyArtist]:
+def intersect_spotify_lastfm_artists(spotify_artists: list[SpotifyArtist],
+                                     lastfm_artists: list[LastfmArtist]) -> list[SpotifyArtist]:
     lastfm_artist_names = [artist.name for artist in lastfm_artists]
     return [artist for artist in spotify_artists if artist.name in lastfm_artist_names]
 
@@ -24,10 +24,18 @@ def main():
     # Might take a while without setting limit.
     lastfm_artists = lastfm_client.get_users_followed_artists()
 
-    intersection = get_spotify_artists_intersecting_with_lastfm(spotify_artists, lastfm_artists)
+    filtered_lastfm_artists = [artist for artist, playcount in lastfm_artists if playcount < 15]
 
-    [print(artist.id, artist.name, artist.genres) for artist in intersection]
-    print(f'Number of artists in intersections: {len(intersection)}')
+    spotify_artists_filtered_by_playcount = intersect_spotify_lastfm_artists(spotify_artists,
+                                                                             filtered_lastfm_artists)
+
+    ids_to_unfollow = [artist.id for artist in spotify_artists_filtered_by_playcount]
+    ids_chunked = [ids_to_unfollow[i:i + 50] for i in range(0, len(ids_to_unfollow), 50)]
+
+    # If we send all hundreds of ids to spotify client, it will
+    # fall due to TooManyRequests.
+    for chunk in ids_chunked:
+        spotify_client.unfollow_artists(chunk)
 
 
 if __name__ == "__main__":
