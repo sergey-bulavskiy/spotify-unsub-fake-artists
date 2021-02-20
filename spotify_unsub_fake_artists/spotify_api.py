@@ -1,8 +1,6 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-spotify_client: spotipy.Spotify = None
-
 
 class SpotifyArtist(object):
     """ Class representing spotify artist objects. Not all fields presented. \n
@@ -14,39 +12,36 @@ class SpotifyArtist(object):
         self.name = name
 
 
-def authenticate(client_id: str, client_secret: str) -> None:
-    """ Should be called before all other interactions with api. """
-    global spotify_client
-    spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
-                                                               client_secret=client_secret,
-                                                               redirect_uri="https://spotify.com",
-                                                               open_browser=False,
-                                                               scope='user-follow-read'))
+class SpotifyClient(object):
+    """ Represents spotify API client, using spotipy to communicate with Spotify API. """
 
+    spotify_client: spotipy.Spotify = None
 
-def get_user_followed_artists():
-    """ Downloads all artists followed by current user """
+    def __init__(self, client_id: str, client_secret: str):
+        """ Should be called before all other interactions with api. """
+        self.spotify_client = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
+                                                                        client_secret=client_secret,
+                                                                        redirect_uri="https://spotify.com",
+                                                                        open_browser=False,
+                                                                        scope='user-follow-read'))
 
-    # TODO: check that api is authenticated somehow.
-    if spotify_client is None:
-        raise Exception(
-            'Spotify client is not authenticated, please call .authenticate with correctly specified credentials')
+    def get_user_followed_artists(self):
+        """ Downloads all artists followed by current user """
 
-    spotify_artists = []
-    response = spotify_client.current_user_followed_artists(50)['artists']
+        spotify_artists = []
+        response = self.spotify_client.current_user_followed_artists(50)['artists']
 
-    while response['next']:
-        spotify_artists.extend(map(
-            lambda json_artist:
-            SpotifyArtist(
-                json_artist["genres"],
-                json_artist["id"],
-                json_artist["name"]),
-            response['items']))
+        while response['next']:
+            spotify_artists.extend(map(
+                lambda json_artist:
+                SpotifyArtist(
+                    json_artist["genres"],
+                    json_artist["id"],
+                    json_artist["name"]),
+                response['items']))
 
-        response = spotify_client.next(response)['artists']
-
-    return spotify_artists
+            response = self.spotify_client.next(response)['artists']
+        return spotify_artists
 
 
 if __name__ == "__main__":

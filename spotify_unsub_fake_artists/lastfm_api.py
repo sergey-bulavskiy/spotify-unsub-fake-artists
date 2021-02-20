@@ -1,27 +1,30 @@
 import pylast
 
-# TODO: implement input via console.
 
-# can be retrieved here: https://www.last.fm/api/accounts
-API_KEY = ''
-API_SECRET = ''
+class LastfmClient(object):
+    """ Represents Lastfm API client, using pylast to communicate with Lastfm API"""
 
-username = ''
-# use of real password somehow.
-password_hash = pylast.md5('')
+    network: pylast.LastFMNetwork = None
+    user: pylast.User = None
+    library: pylast.Library = None
 
-network = pylast.LastFMNetwork(
-    api_key = API_KEY,
-    api_secret = API_SECRET,
-    username = username,
-    password_hash = password_hash
-)
+    def __init__(self, api_key, api_secret, username, plain_password):
+        """ API Credentials can be retrieved here: https://www.last.fm/api/accounts """
+        self.network = pylast.LastFMNetwork(
+            api_key=api_key,
+            api_secret=api_secret,
+            username=username,
+            password_hash=pylast.md5(plain_password)
+        )
 
-user = network.get_user(username)
+        self.user = self.network.get_user(username)
+        self.library = pylast.Library(self.user, self.network)
 
-library = pylast.Library(user, network)
+    def get_users_followed_artists(self, limit: int = None) -> list[pylast.Artist]:
+        my_followed_artists = self.library.get_artists(limit=limit)
 
-my_followed_artists = library.get_artists(limit=None)
-my_followed_artists = [artist for artist in my_followed_artists if artist.playcount < 5]
+        return [artist.item for artist in my_followed_artists]
 
-[print(artist.item, 'playcount: ', artist.playcount) for artist in my_followed_artists]
+
+if __name__ == "__main__":
+    pass
