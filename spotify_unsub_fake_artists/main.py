@@ -7,8 +7,36 @@ from lastfm_api import LastfmClient
 
 def intersect_spotify_lastfm_artists(spotify_artists: list[SpotifyArtist],
                                      lastfm_artists: list[LastfmArtist]) -> list[SpotifyArtist]:
+    """ Returns spotify artists that are found in lastfm artist list. """
+
     lastfm_artist_names = [artist.name for artist in lastfm_artists]
     return [artist for artist in spotify_artists if artist.name in lastfm_artist_names]
+
+
+def unsub_spotify_by_intersection_with_lastfm(lastfm_client, spotify_client, maximum_playcount):
+    """ Function takes list of followed spotify artists, and intersects with lastfm scrobbled artists,
+     which playcount is less than maximum playcount. Takes ids of found intersection and sends requests to
+     spotify to unfollow such artists. """
+
+    spotify_artists = spotify_client.get_user_followed_artists()
+    # Might take a while without setting limit.
+    lastfm_artists = lastfm_client.get_users_followed_artists()
+    filtered_lastfm_artists = [artist for artist, playcount in lastfm_artists if playcount < maximum_playcount]
+    spotify_artists_filtered_by_playcount = intersect_spotify_lastfm_artists(spotify_artists,
+                                                                             filtered_lastfm_artists)
+    ids_to_unfollow = [artist.id for artist in spotify_artists_filtered_by_playcount]
+    ids_chunked = [ids_to_unfollow[i:i + 50] for i in range(0, len(ids_to_unfollow), 50)]
+    # If we send all hundreds of ids to spotify client, it will
+    # fall due to TooManyRequests.
+    for chunk in ids_chunked:
+        spotify_client.unfollow_artists(chunk)
+
+
+def unsub_not_scrobbled_spotify_artists(spotify_client):
+    """ Unfollow all spotify artists, which was not scrobbled on lastfm by current user. """
+
+    # TODO: Implement.
+    raise NotImplementedError
 
 
 def main():
@@ -20,22 +48,8 @@ def main():
     lastfm_client = LastfmClient(lastfm_api_key, lastfm_api_secret, lastfm_username, lastfm_password)
     spotify_client = SpotifyClient(client_id, client_secret)
 
-    spotify_artists = spotify_client.get_user_followed_artists()
-    # Might take a while without setting limit.
-    lastfm_artists = lastfm_client.get_users_followed_artists()
-
-    filtered_lastfm_artists = [artist for artist, playcount in lastfm_artists if playcount < 15]
-
-    spotify_artists_filtered_by_playcount = intersect_spotify_lastfm_artists(spotify_artists,
-                                                                             filtered_lastfm_artists)
-
-    ids_to_unfollow = [artist.id for artist in spotify_artists_filtered_by_playcount]
-    ids_chunked = [ids_to_unfollow[i:i + 50] for i in range(0, len(ids_to_unfollow), 50)]
-
-    # If we send all hundreds of ids to spotify client, it will
-    # fall due to TooManyRequests.
-    for chunk in ids_chunked:
-        spotify_client.unfollow_artists(chunk)
+    #unsub_not_scrobbled_spotify_artists(spotify_client)
+    unsub_spotify_by_intersection_with_lastfm(lastfm_client, spotify_client, 15)
 
 
 if __name__ == "__main__":
