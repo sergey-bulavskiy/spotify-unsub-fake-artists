@@ -6,9 +6,8 @@ class SpotifyArtist(object):
     """ Class representing spotify artist objects. Not all fields presented. \n
         ref: https://developer.spotify.com/documentation/web-api/reference/#object-artistobject """
 
-    def __init__(self, genres: list[str], id: str, name: str) -> None:
-        self.genres = genres
-        self.id = id
+    def __init__(self, spotify_id: str, name: str) -> None:
+        self.spotify_id = spotify_id
         self.name = name
 
 
@@ -48,7 +47,7 @@ class SpotifyClient(object):
         """ Unfollow spotify artists, sending requests by chunks.
         Chunk size is defined within spotify client as const."""
 
-        ids_to_unfollow = [artist.id for artist in artists]
+        ids_to_unfollow = [artist.spotify_id for artist in artists]
         ids_chunked = [ids_to_unfollow[i:i + self.CONST_CHUNK_SIZE_FOR_UNFOLLOW_REQUESTS] for i in
                        range(0, len(ids_to_unfollow), self.CONST_CHUNK_SIZE_FOR_UNFOLLOW_REQUESTS)]
         # If we send all hundreds of ids to spotify client, it will
