@@ -30,7 +30,6 @@ class ParseLastfmCredentialsFromArgsTests(TestCase):
             secrets_helpers.parse_lastfm_credentials_from_args(['-h'])
         self.assertEqual(None, err.exception.code)
 
-    # TODO research ways to make parametrized tests.
     @patch('builtins.print')
     def test_help_arg_prints_out_help_message(self, mock_print):
         with self.assertRaises(SystemExit):
