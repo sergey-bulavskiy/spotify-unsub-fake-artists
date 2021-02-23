@@ -1,5 +1,5 @@
 # spotify-unsub-fake-artists
-Script should unsub from artists that have been listened quite a few times, or have not been listened at all. 
+Script unfollows from artists (on spotify) that have been listened (by scrobbles on lastfm) quite a few times, or have not been listened at all. 
 
 For Spotify API communication library spotipy was used. (https://github.com/plamere/spotipy)
 For Lastfm API communication, pylast was used. (https://github.com/pylast/pylast)
