@@ -15,6 +15,7 @@ class SpotifyArtist(object):
 class SpotifyClient(object):
     """ Represents spotify API client, using spotipy to communicate with Spotify API. """
 
+    CONST_CHUNK_SIZE_FOR_UNFOLLOW_REQUESTS = 50
     spotify_client: spotipy.Spotify = None
 
     def __init__(self, client_id: str, client_secret: str):
@@ -42,6 +43,18 @@ class SpotifyClient(object):
 
             response = self.spotify_client.next(response)['artists']
         return spotify_artists
+
+    def unfollow_spotify_artists(self, artists: list[SpotifyArtist]):
+        """ Unfollow spotify artists, sending requests by chunks.
+        Chunk size is defined within spotify client as const."""
+
+        ids_to_unfollow = [artist.id for artist in artists]
+        ids_chunked = [ids_to_unfollow[i:i + self.CONST_CHUNK_SIZE_FOR_UNFOLLOW_REQUESTS] for i in
+                       range(0, len(ids_to_unfollow), self.CONST_CHUNK_SIZE_FOR_UNFOLLOW_REQUESTS)]
+        # If we send all hundreds of ids to spotify client, it will
+        # fall due to TooManyRequests.
+        for chunk in ids_chunked:
+            self.unfollow_artists(chunk)
 
     def unfollow_artists(self, ids: list[str]):
         """ Unfollow artists with given ids. """

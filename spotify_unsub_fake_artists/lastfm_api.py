@@ -21,10 +21,9 @@ class LastfmClient(object):
         self.user = self.network.get_user(username)
         self.library = pylast.Library(self.user, self.network)
 
-    def get_users_followed_artists(self, limit: int = None) -> list[tuple[Artist, int]]:
+    def get_users_followed_artists(self, limit: int = None) -> dict[str, int]:
         my_followed_artists = self.library.get_artists(limit=limit)
-
-        return [(artist.item, artist.playcount) for artist in my_followed_artists]
+        return {artist.item.name: artist.playcount for artist in my_followed_artists}
 
 
 if __name__ == "__main__":
