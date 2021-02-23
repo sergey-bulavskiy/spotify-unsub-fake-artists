@@ -12,5 +12,6 @@ For Lastfm API communication, pylast was used. (https://github.com/pylast/pylast
 6. Unsub all of them via spotify api. (https://developer.spotify.com/documentation/web-api/reference/follow/unfollow-artists-users/)
 
 
-Spotify and Lastfm API credentials (ids and secrets should be specified in [api_secrets.yaml](https://github.com/sergey-bulavskiy/spotify-unsub-fake-artists/blob/main/api_secrets.yaml)) 
+Spotify and Lastfm API credentials (ids and secrets should be specified in [api_secrets.yaml](https://github.com/sergey-bulavskiy/spotify-unsub-fake-artists/blob/main/api_secrets.yaml)).
+
 Script could be ran with `py (in case of python3) main.py -u <lastfm_username> -p <lastfm_password>`
